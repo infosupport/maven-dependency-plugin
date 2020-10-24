@@ -34,8 +34,6 @@ import org.codehaus.plexus.util.StringUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Collections;
 
 /**
  * Adds a single artifact to the project's pom file.
@@ -142,14 +140,14 @@ public class AddMojo
         }
 
         Dependency dependency = mapDependencyFromCoordinate( coordinate );
-        currentProject.getModel().addDependency( dependency );
+        currentProject.getOriginalModel().addDependency( dependency );
         try
         {
             // TODO: Using this writer only works for pom.xml files.
             //   We should rather use org.apache.maven.model.io.ModelWriter instead (but is not injectable atm?).
             MavenXpp3Writer mavenXpp3Writer = new MavenXpp3Writer();
             // TODO: The pom file will be completely shuffled around, which is not very user-friendly. Can we fix that?
-            mavenXpp3Writer.write( new FileWriter( moduleProjectFile ), currentProject.getModel() );
+            mavenXpp3Writer.write( new FileWriter( moduleProjectFile ), currentProject.getOriginalModel() );
 
             String dependencyKey = dependency.getManagementKey();
             getLog().info( "Successfully added " + dependencyKey + " to " + moduleProjectFile.getName() );
